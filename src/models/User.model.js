@@ -34,10 +34,15 @@ const User = Database.define("user", {
         type: ENUM("user", "admin"),
         defaultValue: "user"
     },
-    isActive: {
+    status: {
+        type: ENUM("active", "disabled"),
+        allowNull: false,
+        defaultValue: "active"
+    },
+    deleted: {
         type: BOOLEAN,
-        defaultValue: true,
-        allowNull: false
+        allowNull: false,
+        defaultValue: false
     }
 });
 

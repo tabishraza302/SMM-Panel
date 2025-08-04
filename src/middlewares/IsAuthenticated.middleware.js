@@ -1,5 +1,8 @@
 const jwt = require("jsonwebtoken");
-const CustomError = require("../utils/CustomError");
+
+const CustomError   = require("../utils/CustomError");
+const StatusCodes   = require("../constants/http/StatusCodes");
+const ErrorMessages  = require("../constants/messages/ErrorMessages");
 
 /**
  * Checks if user is authenticated.
@@ -13,9 +16,9 @@ function IsAuthenticated(req, res, next) {
     const token = authHeader.split(" ")[1];
     try {
         jwt.verify(token, process.env.JWT_SECRET);
-        throw new CustomError(404, "Page not found.")
+        throw new CustomError(StatusCodes.NOT_FOUND, ErrorMessages.SYSTEM.PAGE_NOT_FOUND);
     } catch(error) {
-        if(error.statusCode === 404) next(error);
+        if(error.statusCode === StatusCodes.NOT_FOUND) next(error);
         next();
     }
 }

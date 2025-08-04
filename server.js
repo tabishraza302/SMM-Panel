@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 3001;
 // Establish database connection and start the web server
 (async () => {
     try {
-        await Database.sync(({ force: false}));
+        await Database.sync(({ force: false, alter: false}));
         app.listen(PORT, () => console.log(`\n\n\nServer started at port ${PORT}\n\n\n`))
     } catch(error) {
         console.log({error});

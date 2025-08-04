@@ -5,17 +5,17 @@ const Category      = require("./Category.model");
 const Transaction   = require("./Transaction.model")
 
 // User & Order
-User.hasMany(Order, {foreignKey: "userId"});
-Order.belongsTo(User, {foreignKey: "userId"});
+User.hasMany(Order, {as: "orders",  foreignKey: "userId"});
+Order.belongsTo(User, {as :"user", foreignKey: "userId"});
 
 // Order & Service
-Service.hasMany(Order, {foreignKey: "serviceId"});
-Order.belongsTo(Service, {foreignKey: "serviceId"});
+Service.hasMany(Order, {as: "orders", foreignKey: "serviceId"});
+Order.belongsTo(Service, {as: "service", foreignKey: "serviceId"});
 
 // User & Transaction
-User.hasMany(Transaction, {foreignKey: "userId"});
-Transaction.belongsTo(User, {foreignKey: "userId"});
+User.hasMany(Transaction, {as: "transactions", foreignKey: "userId"});
+Transaction.belongsTo(User, {as: "user", foreignKey: "userId"});
 
 // Category & service 
-Category.hasMany(Service, {foreignKey: "categoryId"});
-Service.belongsTo(Category, {foreignKey: "categoryId"});
+Category.hasMany(Service, {as: "services", foreignKey: "categoryId"});
+Service.belongsTo(Category, {as: "category", foreignKey: "categoryId"});

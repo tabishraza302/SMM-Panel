@@ -1,4 +1,4 @@
-const { UUID, UUIDV4, STRING, TEXT, DECIMAL, INTEGER } = require("sequelize");
+const { UUID, UUIDV4, STRING, TEXT, DECIMAL, INTEGER, ENUM, BOOLEAN } = require("sequelize");
 
 const Category = require("./Category.model");
 const Database = require("../config/database.config"); 
@@ -36,6 +36,16 @@ const Service = Database.define("services", {
     max_quantity: {
         type: INTEGER,
         allowNull: false
+    },
+    status: {
+        type: ENUM("active", "disabled"),
+        allowNull: false,
+        defaultValue: "active"
+    },
+    deleted: {
+        type: BOOLEAN,
+        allowNull: false,
+        defaultValue: false
     }
 });
 

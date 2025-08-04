@@ -1,4 +1,4 @@
-const { UUID, UUIDV4, STRING } = require("sequelize");
+const { UUID, UUIDV4, STRING, ENUM, BOOLEAN, INTEGER } = require("sequelize");
 
 const Database = require("../config/database.config");
 
@@ -13,6 +13,20 @@ const Category = Database.define("categories", {
         type: STRING,
         allowNull: false,
     },
+    status: {
+        type: ENUM("active", "disabled"),
+        allowNull: false,
+        defaultValue: "active"
+    },
+    position: {
+        type: INTEGER,
+        allowNull: false,
+    },
+    deleted: {
+        type: BOOLEAN,
+        allowNull: false,
+        defaultValue: false
+    }
 });
 
 module.exports = Category;

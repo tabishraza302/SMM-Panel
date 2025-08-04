@@ -1,14 +1,55 @@
 const { body } = require("express-validator");
+const MessageBuilder = require("../utils/ValidationMessagesBuilder");
 
-exports.registrationValidator = [
-    body("firstName").trim().notEmpty().isAlpha().withMessage("Enter valid first Name."),
-    body("lastName").trim().notEmpty().isAlpha().withMessage("Enter a valid Last Name."),
-    body("email").trim().isEmail().normalizeEmail().withMessage("Enter a valid Email."),
-    body("password").trim().isLength({ min: 6 }).withMessage("Enter a valid password. Minimum length should be 6."),
-    body("confirmPassword").custom((value, {req}) => value === req.body.password).withMessage("Password Doesn't match.")
-]
+const AuthValidator = {
+    Registration: [
+        body("firstName")
+            .trim()
+            .notEmpty()
+            .withMessage(MessageBuilder.required("First name"))
+            .isAlpha()
+            .withMessage(MessageBuilder.mustBeAlpha("First name")),
 
-exports.loginValidator = [
-    body("email").trim().isEmail().normalizeEmail().withMessage("Enter a valid email."),
-    body("password").trim().isAlphanumeric().isLength({min: 6}).withMessage("Enter a valid password.")
-]
+        body("lastName")
+            .trim()
+            .notEmpty()
+            .withMessage(MessageBuilder.required("Last name"))
+            .isAlpha()
+            .withMessage(MessageBuilder.mustBeAlpha("Last name")),
+
+        body("email")
+            .trim()
+            .isEmail()
+            .normalizeEmail()
+            .withMessage(MessageBuilder.invalid("email")),
+        
+        body("password")
+            .trim()
+            .isString()
+            .isLength({ min: 6 })
+            .withMessage(MessageBuilder.minLength("Password", 6)),
+
+        body("confirmPassword")
+            .trim()
+            .isString()
+            .isLength({min: 6})
+            .custom((value, {req}) => value === req.body.password)
+            .withMessage(MessageBuilder.match("Confirm Password", "Password"))
+    ],
+
+    Login: [
+        body("email")
+            .trim()
+            .isEmail()
+            .normalizeEmail()
+            .withMessage(MessageBuilder.invalid("email")),
+        
+        body("password")
+            .trim()
+            .isString()
+            .isLength({min: 6})
+            .withMessage(MessageBuilder.minLength("Password", 6))
+    ]
+}
+
+module.exports = AuthValidator;

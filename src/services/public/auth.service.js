@@ -1,11 +1,12 @@
 const bcrypt = require("bcryptjs");
 const jwt    = require("jsonwebtoken");
 
-const CustomError  = require("../utils/CustomError");
-const User         = require("../models/User.model");
+const CustomError   = require("../../utils/customError");
+const User          = require("../../models/User.model");
+const StatusCodes   = require("../../constants/http/StatusCodes");
+const ErrorMessages = require("../../constants/messages/ErrorMessages");
 
-class AuthService {
-    
+class AuthService {    
     /**
      * Register a new user to database
      * Throws an error if user already exist with same details
@@ -16,7 +17,7 @@ class AuthService {
 
         // Checking if user with this email already exists
         const existingUser = await User.findOne({ where: {email} })
-        if(existingUser) throw new CustomError(409, "User already exist.");
+        if(existingUser) throw new CustomError(StatusCodes.CONFLICT, ErrorMessages.USER.ALREADY_EXISTS);
 
         // Hashing password before saving
         const passwordHash = await bcrypt.hash(password, 11);
@@ -43,11 +44,11 @@ class AuthService {
 
         // Check if user exist with this email
         const { id, role, passwordHash } = await User.findOne({ where : {email}, attributes: ["id", "role", "passwordHash"] });
-        if(!passwordHash) throw new CustomError(200, "Incorrect credential.")
+        if(!passwordHash) throw new CustomError(StatusCodes.BAD_REQUEST, ErrorMessages.AUTH.INVALID_CREDENTIALS);
 
         // Compared user give password with the original password hash to verify
         const passwordMatched = await bcrypt.compare(password, passwordHash);
-        if(!passwordMatched) throw new CustomError(401, "Incorrect email/password.")
+        if(!passwordMatched) throw new CustomError(StatusCodes.BAD_REQUEST, ErrorMessages.AUTH.INVALID_CREDENTIALS);
 
         // Generate JWT token for authentication verification.
         const authToken = jwt.sign({ id, role}, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRE });
